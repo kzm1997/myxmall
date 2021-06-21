@@ -1,13 +1,16 @@
 <template>
   <div class='my_page'>
-   hello
+    <YHeader></YHeader>
+     <router-view class="main"></router-view> 
   </div>
 </template>
 
 <script>
-
+import YHeader from '../common/header'
 export default {
-  components: {},
+  components: {
+      YHeader
+  },
   data () {
     return {
 
@@ -34,7 +37,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
-//@import url(); 
+<style lang='scss' scoped>
+
 
 </style>

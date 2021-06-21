@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router/router.js'
+import 'element-ui/lib/theme-chalk/index.css';
+import Vuex from 'vuex'
 import { Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option } from 'element-ui'
 Vue.config.productionTip = false
 
 
+
+
+Vue.use(Vuex);
 Vue.use(Button)
 Vue.use(Pagination)
 Vue.use(Checkbox)
@@ -24,5 +29,5 @@ Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 new Vue({
   render: h => h(App),
-  router
+  router,
 }).$mount('#app')

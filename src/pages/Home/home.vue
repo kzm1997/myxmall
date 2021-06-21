@@ -12,12 +12,14 @@
 </template>
 
 <script>
-
+import {productHome} from '../../api/index.js'
 export default {
   components: {},
   data () {
     return {
-
+        error:false,
+        home:[],
+        loading: true
     }
   },
   computed: {},
@@ -26,7 +28,21 @@ export default {
 
   },
   mounted () {
-
+     productHome().then((result) => {
+         if(result.scuuess===false){
+             return;
+         }
+         let data=result.result;
+         this.home=data;
+         this.loading=false;
+         for(let i=0;i<data.length;i++){
+             if(data[i].type===0){
+                 this.banner=data[i].panelContents;
+             }
+         }
+     }).catch((err) => {
+         console.log(err);
+     }); 
   },
   beforeCreate () { }, // 
   beforeMount () { }, // 
@@ -36,14 +52,14 @@ export default {
   destroyed () { }, // 
   activated () { }, // 
   methods: {
-
+       
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='cs' scoped>
    .home{
        display:flex;
-
+     
    }
 </style>
