@@ -4,3 +4,8 @@ import http from './public'
 export const productHome=(params)=>{
     return http.doGet('/goods/home',params);
 }
+
+//用户信息 
+export const userInfo=(params)=>{
+    return http.doGet('/user/checkLogin',params);
+}

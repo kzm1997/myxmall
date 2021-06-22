@@ -1,7 +1,9 @@
 import mutations from './mutations.js'
 import action from './action.js'
 import Vuex from 'vuex'
+import Vue from 'vue'
 
+Vue.use(Vuex);
 const  state={
     login:false, //是否登录
     userInfo:null, //用户信息
