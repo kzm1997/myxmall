@@ -9,3 +9,8 @@ export const productHome=(params)=>{
 export const userInfo=(params)=>{
     return http.doGet('/user/checkLogin',params);
 }
+
+//注册
+export const register=(params)=>{
+    return http.doPost('/member/register',params);
+}
