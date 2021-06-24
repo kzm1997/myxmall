@@ -69,6 +69,14 @@
               </y-button>
             </div>
             <div class="border" style="margin-bottom: 10px"></div>
+               <ul class="common-form pr">
+              <li style="text-align: center;line-height: 48px;margin-bottom: 0;font-size: 12px;color: #999;">
+                <span>如果您已拥有 XMall 账号，则可在此</span>
+                <a href="javascript:;"
+                   style="margin: 0 5px"
+                   @click="toLogin">登陆</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -87,7 +95,7 @@ export default {
   },
   data() {
     return {
-      pop:'fixed',
+      pop:'pop',
       blockPuzzle:'blockPuzzle',
       cart: [],
       loginPage: true,
@@ -105,6 +113,7 @@ export default {
       agreement: false,
       registxt: "注册",
       statusKey: "",
+      captchaVerification:''
     };
   },
   computed: {},
@@ -119,12 +128,29 @@ export default {
   destroyed() {}, //
   activated() {}, //
   methods: {
-    regist() {
+     regist() {
       this.registxt = "注册中....";
+      this.useVerify();
+    },
+    message (m){
+      this.$message.error({
+        message:m
+      })
+    },
+    messageSuccess(){
+      this.$message({
+        message:'恭喜您,注册成功',
+        type:'success'
+      })
+    },
+    success(params) {
+      console.log(params.captchaVerification);
+      this.captchaVerification=params.captchaVerification;
+
       let userName = this.registered.userName;
       let userPwd = this.registered.userPwd;
       let userPwd2 = this.registered.userPwd2;
-      if (!userName || !userPwd || userPwd2) {
+      if (!userName || !userPwd || !userPwd2) {
         this.message("账号密码不能为空");
         this.registxt = "注册";
         return false;
@@ -135,26 +161,30 @@ export default {
         return false;
       }
       register({
-        userName,
-        userPwd,
+        userName:this.registered.userName,
+        userPwd:this.registered.userPwd,
+        userPwd2:this.registered.userPwd2,
+        captchaVerification:this.captchaVerification
       }).then((res) => {
         if (res.success == true) {
           this.messageSuccess();
+          this.toLogin();
         } else {
           this.message(res.message);
           this.registxt = "注册";
           return false;
         }
       });
-    },
 
-    success(params) {
-      // params 返回的二次验证参数, 和登录参数一起回传给登录接口，方便后台进行二次验证
-      console.log(params);
     },
     useVerify() {
       this.$refs.verify.show();
     },
+    toLogin(){
+      this.$router.push({
+        path:'/login'
+      })
+    }
   },
 };
 </script>
@@ -233,4 +263,5 @@ export default {
   margin: 0;
 }
 </style>
+
 
