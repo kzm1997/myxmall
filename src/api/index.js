@@ -14,3 +14,8 @@ export const userInfo=(params)=>{
 export const register=(params)=>{
     return http.doPost('/member/register',params);
 }
+
+
+export const userLogin=(params)=>{
+    return http.doPost('/member/login',params);
+}

@@ -63,6 +63,16 @@
                 "
               >
               </y-button>
+              <div class="verify">
+                <Verify
+                  @success="success"
+                  :mode="pop"
+                  :captchaType="blockPuzzle"
+                  :imgSize="{ width: '330px', height: '155px' }"
+                  ref="verify"
+                >
+                </Verify>
+              </div>
               <div class="footer">
                 <div class="other">其它账号登录：</div>
                 <a
@@ -82,12 +92,18 @@
 
 <script>
 import YButton from "../../components/YButton";
+import { userLogin } from "@/api/index.js";
+import { setStore, removeStore, getStore } from "@/utils/store.js";
+import Verify from "../../components/verifition/Verify.vue";
 export default {
   components: {
     YButton,
+    Verify,
   },
   data() {
     return {
+      pop: "pop",
+      blockPuzzle: "blockPuzzle",
       cart: [],
       loginPage: true,
       ruleForm: {
@@ -104,12 +120,15 @@ export default {
       autoLogin: false,
       logintxt: "登录",
       statusKey: "",
+      captchaVerification: "",
     };
   },
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.getRemembered();
+  },
   beforeCreate() {}, //
   beforeMount() {}, //
   beforeUpdate() {}, //
@@ -118,23 +137,86 @@ export default {
   destroyed() {}, //
   activated() {}, //
   methods: {
-    open(t,m){
-        this.$notify.info({
-          title:t,
-          message:m
-        })
+    open(t, m) {
+      this.$notify.info({
+        title: t,
+        message: m,
+      });
     },
-    login(){
-      
+    messageSuccess() {
+      this.$message({
+        message: "恭喜您，注册成功！赶紧登录体验吧",
+        type: "success",
+      });
+    },
+    message(m) {
+      this.$message.error({
+        message: m,
+      });
+    },
+    getRemembered() {
+      var judge = getStore("remember");
+      if (judge === "true") {
+        this.autoLogin = true;
+        this.ruleForm.userName = getStore("rusername");
+        this.ruleForm.userPwd = getStore("rpassword");
+      }
+    },
+    login() {
+      this.$refs.verify.show();
+    },
+    remmemberPass() {
+      if (this.autoLogin === true) {
+        setStore("remember", "true");
+        setStore("rusername", this.ruleForm.userName);
+        setStore("rpassword", this.ruleForm.userPwd);
+      } else {
+        setStore("remember", "false");
+        removeStore("rusername");
+        removeStore("rpassword");
+      }
     },
     login_back() {
       this.$router.go(-1);
     },
-    toRegister(){
+    toRegister() {
       this.$router.push({
-        path:'/register'
-      })
-    }
+        path: "/register",
+      });
+    },
+    success(param) {
+      this.captchaVerification = param.captchaVerification;
+      this.remmemberPass();
+
+      if (!this.ruleForm.userName || !this.ruleForm.userPwd) {
+        this.message("账号或者密码不能为空");
+        return false;
+      }
+      var params = {
+        userName: this.ruleForm.userName,
+        userPwd: this.ruleForm.userPwd,
+        captchaVerification: this.captchaVerification,
+      };
+      userLogin(params).then((res) => {
+        if (res.result.state == 1) {
+          setStore("token", res.result.token);
+          setStore("userId", res.result.id);
+
+          if (this.cart.length) {
+            //TODO:  加载购物车
+            console.log(this.cart);
+          } else {
+            this.$router.push({
+              path: "/",
+            });
+          }
+        }else{
+          this.logintxt='登录'
+          this.message(res.result.message)
+          return false;
+        }
+      });
+    },
   },
 };
 </script>
@@ -180,7 +262,7 @@ export default {
       }
     }
 
-    .li-auto{
+    .li-auto {
       display: flex;
       justify-content: space-between;
     }
@@ -189,27 +271,20 @@ export default {
       margin-bottom: 15px;
     }
 
-    .loginClick{
-      margin-bottom: 10px; 
+    .loginClick {
+      margin-bottom: 10px;
     }
 
-    .footer{
+    .footer {
       margin-top: 20px;
       border-top: 1px solid #ccc;
       display: flex;
-      .other{
-        margin: 20px 5px 0 0;  
+      .other {
+        margin: 20px 5px 0 0;
         color: #999;
         font-size: 12px;
       }
     }
-    
   }
-
-
-  
-
-
-
 }
 </style>

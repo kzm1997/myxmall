@@ -5,7 +5,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import Vuex from 'vuex'
 //import { userInfo } from './api'
 import store from './store/index.js'
-import { Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option } from 'element-ui'
+import
+ { Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message,  Carousel,CarouselItem,
+   Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option } from 'element-ui'
 //import { getStore } from './utils/store.js';
 Vue.config.productionTip = false
 
@@ -57,6 +59,8 @@ Vue.use(Input)
 Vue.use(Dialog)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Carousel);
+Vue.use(CarouselItem);
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification

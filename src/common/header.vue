@@ -13,9 +13,7 @@
                 <el-autocomplete
                 placeholder="请输入商品信息"
                 icon="search"
-                v-model="input"
-                minlength=1
-                maxlength=100>
+                v-model="input">
               </el-autocomplete>
               <router-link to="/goods"><a @click="changePage(2)">全部商品</a></router-link>
               <router-link to="/thanks"><a @click="changePage(4)">捐赠</a></router-link>
@@ -65,16 +63,33 @@
 </template>
 
 <script>
-
+import {mapState} from 'vuex'
 export default {
   components: {},
   data () {
-    return {
-      input:'',
-      st: false
-    }
+      return {
+        user: {},
+        // 查询数据库的商品
+        st: false,
+        // 头部购物车显示
+        cartShow: false,
+        positionL: 0,
+        positionT: 0,
+        timerCartShow: null, // 定时隐藏购物车
+        input: '',
+        choosePage: -1,
+        searchResults: [],
+        timeout: null,
+        token: '',
+        navList: []
+      }
   },
-  computed: {},
+
+  computed: {
+    ...mapState([
+      'cartList','login','receiveInCart','showCart','userInfo'
+    ])
+  },
   watch: {},
   created () {
 
