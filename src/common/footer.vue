@@ -78,7 +78,7 @@
   </div>
 </template>
 <script>
-  import YButton from '/components/YButton'
+  import YButton from '../components/YButton.vue'
   export default {
     data () {
       return {

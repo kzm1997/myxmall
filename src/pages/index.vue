@@ -2,14 +2,17 @@
   <div class='my_page'>
     <YHeader></YHeader>
      <router-view class="main"></router-view> 
+     <Footer></Footer>
   </div>
 </template>
 
 <script>
 import YHeader from '../common/header'
+import Footer from  '../common/footer'
 export default {
   components: {
-      YHeader
+      YHeader,
+      Footer
   },
   data () {
     return {

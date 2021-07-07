@@ -4,6 +4,7 @@ import Router from 'vue-router'
 const index = () => import('../pages/index.vue')
 const Register=()=>import('../pages/login/register.vue')
 const Login=()=>import('../pages/login/login.vue')
+const goodsDetails=()=>import('../pages/Goods/goodsDetails.vue')
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
           path: 'home',
           name: 'home',
           component: () => import('../pages/Home/home.vue')
+        },
+        {
+          path:'goodsDetails',
+          name:'goodsDetails',
+          component:goodsDetails
         }
       ]
     },

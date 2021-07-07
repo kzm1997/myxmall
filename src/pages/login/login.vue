@@ -95,10 +95,11 @@ import YButton from "../../components/YButton";
 import { userLogin } from "@/api/index.js";
 import { setStore, removeStore, getStore } from "@/utils/store.js";
 import Verify from "../../components/verifition/Verify.vue";
+import {addCart} from '@/api/goods.js'
 export default {
   components: {
     YButton,
-    Verify,
+    Verify
   },
   data() {
     return {
@@ -203,8 +204,15 @@ export default {
           setStore("userId", res.result.id);
 
           if (this.cart.length) {
-            //TODO:  加载购物车
-            console.log(this.cart);
+            for(let i=0;i<this.cart.length;i++){
+              addCart(this.cart[i]).then(res=>{
+                console.log(res);
+              })
+            }
+            removeStore('buyCart')
+            this.$router.push({
+              path:'/'
+            })
           } else {
             this.$router.push({
               path: "/",

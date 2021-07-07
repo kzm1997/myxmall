@@ -2,6 +2,12 @@
   <div class='gray-box'>
       <div class="title">
           <h2>{{title}}</h2>
+          <div>
+             <slot name="right"></slot> 
+          </div>
+      </div>
+      <div>
+          <slot name="content"></slot>
       </div>
   </div>
 </template>

@@ -19,3 +19,9 @@ export const register=(params)=>{
 export const userLogin=(params)=>{
     return http.doPost('/member/login',params);
 }
+
+export const loginOut=(params)=>{
+    return http.doGet('/member/loginOut',params);
+}
+
+

@@ -1,9 +1,10 @@
 import axios from 'axios'
+axios.defaults.baseURL ='http://localhost:7071'
 axios.defaults.timeout=30000
 export default {
     doGet(url,params={}){
         return new Promise((resolve,reject)=>{
-            axios.get(url,params).then(res=>{
+            axios.get(url,{params}).then(res=>{
                 resolve(res.data)
             }).catch(error=>{
                 reject(error);
@@ -20,3 +21,10 @@ export default {
         })
     }
 }
+
+
+
+
+
+
+
