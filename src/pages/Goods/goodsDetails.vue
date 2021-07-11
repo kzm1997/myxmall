@@ -3,7 +3,7 @@
     <div class="gray-box-top">
       <div class="gallery-wrapper">
         <div class="gallery">
-          <div class="thumbnail">
+          <div class="thumbnailleft">
             <ul>
               <li
                 v-for="(item, i) in small"
@@ -79,7 +79,7 @@ import YShelf from "../../components/shelf.vue";
 import BuyNum from "../../components/buynum.vue";
 import { productDet,addCart } from "../../api/goods";
 import { getStore } from "../../utils/store";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   components: { YButton, YShelf, BuyNum },
   data() {
@@ -94,7 +94,9 @@ export default {
       userId: "",
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(['login','showMoveImg','showCart'])
+  },
   watch: {},
   created() {
     let id = this.$route.query.productId;
@@ -112,32 +114,38 @@ export default {
   methods: {
     ...mapMutations(["ADD_CART", "ADD_ANIMATION", "SHOW_CART"]),
     addCart(product) {
+      console.log(product);
       if (!this.showMoveImg) {
+        console.log(1213);
         //动画2是否在运动
         if (!this.login) {
+          console.log(333);
           //登录了,直接存在用户名下
           let param={
             userId:this.userId,
             productId:product.productId,
             productNum:this.productNum
           }
-          addCart(param).then(() => {
-            this.ADD_CART({
+         let cart={
               //并不重新请求数据
-              productId: product.id,
-              salePrice: product.price,
-              productName: product.name,
-              productImg: product.img,
+              productId: product.productId,
+              salePrice: product.salePrice,
+              productName: product.productName,
+              productImg: product.productImageBig,
               productNum: this.productNum,
-            });
+            };
+          console.log(cart);
+          addCart(param).then(() => {
+            this.ADD_CART(cart);
           });
         } else {
+          console.log(2222);
           //未登录 vuex
           this.ADD_CART({
-            productId: product.id,
-            salePrice: product.price,
-            productName: product.name,
-            productImg: product.img,
+            productId: product.productId,
+            salePrice: product.salePrice,
+            productName: product.productName,
+            productImg: product.productImageBig,
             productNum: this.productNum,
           });
         }
@@ -196,8 +204,8 @@ export default {
     .gallery {
       display: flex;
       width: 50%;
-      .thumbnail {
-        li.on {
+      .thumbnailleft {
+        li {
           padding: 10px;
           border: 3px solid #ccc;
           border-radius: 5px;

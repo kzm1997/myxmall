@@ -203,7 +203,14 @@ export default {
   },
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.token=getStore('token')
+    if(this.login){
+      this._getCartList();
+    }else{
+      this.INIT_BUYCART();
+    }
+  },
   beforeCreate() {}, //
   beforeMount() {}, //
   beforeUpdate() {}, //
