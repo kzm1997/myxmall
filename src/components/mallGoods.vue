@@ -83,7 +83,7 @@ export default {
             userId: getStore("userId"),
             productId: id,
             productNum: 1,
-          }).then((res) => {
+          }).then(() => {
             // 并不重新请求数据
             this.ADD_CART({
               productId: id,

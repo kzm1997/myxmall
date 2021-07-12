@@ -183,6 +183,9 @@ export default {
         this.big = this.small[0];
       });
     },
+    checkout(productId){
+       this.$router.push({path:'/checkout',query:{productId,num:this.productNum}});
+    }
   },
 };
 </script>
