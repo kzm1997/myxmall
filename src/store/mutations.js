@@ -1,10 +1,12 @@
+
 import { getStore, setStore } from '../utils/store.js'
 import {
     INIT_BUYCART,
     ADD_CART,
     RECORD_USERINFO,
     SHOW_CART,
-    ADD_ANIMATION
+    ADD_ANIMATION,
+    EDIT_CART
 } from './mutationType.js'
 
 export default {
@@ -69,6 +71,29 @@ export default {
             state.cartPositionT = cartPositionT
             state.cartPositionL = cartPositionL
         }
+    },
+    [EDIT_CART](state,{productId,productNum,checked}){
+        let cart=state.cartList;
+        if(productNum){
+            cart.forEach((item)=>{
+                if(item.productId==productId){
+                    item.productNum=productNum;
+                    item.checked=checked;
+                }
+            })
+        }else if(productId){
+            cart.forEach((item, i) => {
+                if (item.productId === productId) {
+                  cart.splice(i, 1)
+                }
+              })
+        }else{
+            cart.forEach((item) => {
+                item.checked = checked ? '1' : '0'
+              })
+        }
+        state.cartList=cart;
+        setStore('buyCart',state.cartList);
     }
 }
 

@@ -156,6 +156,14 @@ export default {
 .home {
   margin-top: 50px;
 
+   .el-carousel__item{
+     img{
+       width: 100%;
+       height: 100%;
+     }
+   }
+
+
   .home_body {
     display: flex;
     flex-direction: column;

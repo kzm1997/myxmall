@@ -61,7 +61,7 @@
                       :id="item.productId"
                       :checked="item.checked"
                       :limit="item.limitNum"
-                      @click="EditNum"
+                       @edit-num="EditNum"
                     >
                     </buy-num>
                   </div>
@@ -155,8 +155,10 @@
 
 <script>
 import YButton from "../../components/YButton.vue";
+import { editCheckAll, getCartList, delCartChecked,cartEdit,cartDel } from "../../api/goods";
 import { mapState, mapMutations } from "vuex";
 import BuyNum from "../../components/buynum.vue";
+import { getStore } from "../../utils/store";
 export default {
   components: { YButton, BuyNum },
   data() {
@@ -168,6 +170,10 @@ export default {
   },
   computed: {
     ...mapState(["cartList"]),
+    //是否全选
+    checkAllFlag () {
+      return this.checkedCount===this.cartList.length;
+    },
     //勾选的数量
     checkedCount() {
       let i = 0;
@@ -177,12 +183,46 @@ export default {
             i++;
           }
         });
+      console.log(i);  
       return Number(i);
+    },
+    //计算总数量
+    totalNum() {
+      var totalNum = 0;
+      this.cartList &&
+        this.cartList.forEach((item) => {
+          totalNum += item.productNum;
+        });
+      return Number(totalNum);
+    },
+    // 选中的总价格
+    checkPrice() {
+      var totalPrice = 0;
+      this.cartList &&
+        this.cartList.forEach((item) => {
+          if (item.checked === "1") {
+            totalPrice += item.productNum * item.salePrice;
+          }
+        });
+      return totalPrice;
+    },
+    // 选中的商品数量
+    checkNum() {
+      var checkNum = 0;
+      this.cartList &&
+        this.cartList.forEach((item) => {
+          if (item.checked === "1") {
+            checkNum += item.productNum;
+          }
+        });
+      return checkNum;
     },
   },
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.userId=getStore('userId');
+  },
   beforeCreate() {}, //
   beforeMount() {}, //
   beforeUpdate() {}, //
@@ -191,12 +231,79 @@ export default {
   destroyed() {}, //
   activated() {}, //
   methods: {
-    ...mapMutations(["EDIT_CART"]),
-    checkAllFlag() {
-      return this.checkedCount === this.cartList.length;
+        ...mapMutations(["EDIT_CART","INIT_BUYCART"]),
+    goodsDetails(id) {
+      window.open(window.location.origin + "#/goodsDetails?productId=" + id);
     },
+    // 修改购物车
+    _cartEdit(userId, productId, productNum, checked) {
+      cartEdit({
+        userId,
+        productId,
+        productNum,
+        checked,
+      }).then((res) => {
+        if (res.success === true) {
+          this.EDIT_CART({
+            productId,
+            checked,
+            productNum,
+          });
+        }
+      });
+    },
+    // 修改购物车
+    editCart(type, item) {
+      if (type && item) {
+        let checked = item.checked;
+        let productId = item.productId;
+        let productNum = item.productNum;
+        // 勾选
+        if (type === "check") {
+          let newChecked = checked === "1" ? "0" : "1";
+          this._cartEdit(this.userId, productId, productNum, newChecked);
+        }
+      } else {
+        console.log("缺少所需参数");
+      }
+    },
+    //全选
+    editCheckAll() {
+      let checkAll = !this.checkAllFlag;
+      editCheckAll({ userId: this.userId, checked: checkAll }).then(() => {
+        this.EDIT_CART({ checked: checkAll });
+      });
+    },
+  EditNum: function(productNum,productId,checked){
+      this._cartEdit(this.userId,productId,productNum,checked)
   },
-};
+  //删除整个购物车
+  cartdel(productId){
+     cartDel({userId:this.userId,itemId:productId}).then(()=>{
+         this.EDIT_CART({productId})
+     })
+  },
+  delChecked() {
+    getCartList({ userId: getStore("userId") }).then((res) => {
+      if (res.success === true) {
+        res.result.forEach((item) => {
+          if (item.checked == "1") {
+            let productId = item.productId;
+            this.EDIT_CART({ productId });
+          }
+        });
+      }
+    });
+    delCartChecked({ userId: this.userId }).then((res) => {
+      if (res.success !== true) {
+        this.$message.error({
+          message: "删除失败",
+        });
+      }
+    });
+  }
+  }
+}
 </script>
 
 <style lang='scss' scoped>
@@ -263,14 +370,20 @@ export default {
           width: 60px;
           text-align: center;
           line-height: 74px;
-          .blue-checkbox-new.checkbox-on {
+          .blue-checkbox-new{
             margin-left: 20px;
-            background: url(../../../static/images/checkbox-new_631a56a4f6.png)
-              no-repeat 0 0px;
             width: 20px;
             height: 20px;
             cursor: pointer;
-            display: inline-block;
+            display: inline-block;           
+             background: url(../../../static/images/checkbox-new_631a56a4f6.png)
+            no-repeat 0 -20px;
+          }
+          .blue-checkbox-new.checkbox-on {
+      
+            background: url(../../../static/images/checkbox-new_631a56a4f6.png)
+              no-repeat 0 0px;
+     
           }
         }
         .items-thumb {
@@ -360,15 +473,19 @@ export default {
               display: flex;
               text-align: center;
               align-items: center;
-              .blue-checkbox-new.checkbox-on {
+              .blue-checkbox-new{
                 margin-left: 25px;
-                background: url(../../../static/images/checkbox-new_631a56a4f6.png)
-                  no-repeat 0 0px;
                 width: 20px;
                 margin-right: 10px;
                 height: 20px;
                 cursor: pointer;
                 display: inline-block;
+                  background: url(../../../static/images/checkbox-new_631a56a4f6.png)
+                  no-repeat 0 -20px;
+              }
+              .blue-checkbox-new.checkbox-on {
+                background: url(../../../static/images/checkbox-new_631a56a4f6.png)
+                  no-repeat 0 0px;
               }
               span {
                 display: flex;
@@ -387,9 +504,9 @@ export default {
         }
       }
       .shipping {
-          display: flex;
+        display: flex;
         .shipping-box {
-          align-items: center;  
+          align-items: center;
           margin-right: 50px;
           display: flex;
           .shipping-total.shipping-num {
@@ -417,7 +534,7 @@ export default {
           .shipping-total.shipping-price {
             border-left: 1px dashed #959595;
             padding-left: 15px;
-            margin-right:20px;
+            margin-right: 20px;
           }
         }
       }
